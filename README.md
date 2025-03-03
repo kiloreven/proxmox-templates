@@ -7,6 +7,7 @@ configured template for that VM on your proxmox server.
 - Ubuntu 24.04 (EFI, Secure Boot enabled)
 - Rocky Linux 9.5 (EFI, Secure Boot enabled)
 - Arch Linux (EFI)
+- FreeBSD 14.2 (EFI, work in progress)
 
 ## Notes:
 
@@ -29,9 +30,11 @@ The configuration here is opinionated in that it:
 
 
 ## TODO:
+- [ ] FreeBSD: Doesn't set SSH keys for root user, and login without password in console shouldnt be allowed
 - [ ] Make more generic with reusable components
 - [ ] Add command line arguments for `VM_` variables
 - [ ] Add `recreate` option or something like that
+
 
 ## Stuff taken from:
 - https://github.com/UntouchedWagons/Ubuntu-CloudInit-Docs

@@ -11,7 +11,6 @@ VM_NET_BRIDGE=vmbr0
 VM_ID=8395
 VM_CORES=2
 VM_MEM=2048
-VM_VLAN=22
 VM_DISK_SIZE=32G
 
 VM_IMAGE_FN=$(basename "$VM_IMAGE_URL")
@@ -67,7 +66,7 @@ qm create $VM_ID --name "$VM_TEMPLATE_NAME" --ostype l26 \
     --bios ovmf --machine q35 --efidisk0 $VM_STORAGE:0,efitype=4m,pre-enrolled-keys=1 \
     --cpu host --socket 1 --cores $VM_CORES \
     --vga serial0 --serial0 socket  \
-    --net0 virtio,bridge=$VM_NET_BRIDGE,tag=$VM_VLAN,firewall=1
+    --net0 virtio,bridge=$VM_NET_BRIDGE,firewall=1
     
 qm importdisk $VM_ID $VM_IMAGE_FN $VM_STORAGE
 qm set $VM_ID --scsihw virtio-scsi-pci --virtio0 $VM_STORAGE:vm-$VM_ID-disk-1,discard=on,iothread=on

@@ -7,7 +7,7 @@ configured template for that VM on your proxmox server.
 - Ubuntu 24.04 (EFI, Secure Boot enabled)
 - Rocky Linux 9.5 (EFI, Secure Boot enabled)
 - Arch Linux (EFI)
-- FreeBSD 14.2 (EFI, work in progress)
+- FreeBSD 14.2 (EFI, work in progress, do not use!)
 
 ## Notes:
 

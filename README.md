@@ -14,8 +14,6 @@ The configuration here is opinionated in that it:
 - Uses EFI boot
 - Enables a serial console
 - Sets a default firewall on the VM allowing only incoming ping and ssh
-- Defaults to `vlan=22` (TODO: set up vmbr0 as default)
-- Defaults to `local-lvm` for storage (TODO: make configurable or auto-detect?)
 - Uses local-lvm for storage
 - Adds ssh keys from ~/.ssh/authorized_keys to the root user in the VM
 - Resizes the disk to 32GB AFTER importing it, so the source image file is unmodified

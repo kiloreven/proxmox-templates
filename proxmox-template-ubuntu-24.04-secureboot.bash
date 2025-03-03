@@ -5,6 +5,9 @@ set -euo pipefail
 VM_TEMPLATE_NAME="ubuntu-2404-template"
 VM_IMAGE_URL=https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
 
+
+VM_STORAGE=local-lvm
+VM_NET_BRIDGE=vmbr0
 VM_ID=8244
 VM_CORES=2
 VM_MEM=2048
@@ -62,17 +65,17 @@ fi
 qm create $VM_ID --name "$VM_TEMPLATE_NAME" --ostype l26 \
     --memory $VM_MEM \
     --agent 1 \
-    --bios ovmf --machine q35 --efidisk0 local-lvm:0,efitype=4m,pre-enrolled-keys=1 \
+    --bios ovmf --machine q35 --efidisk0 $VM_STORAGE:0,efitype=4m,pre-enrolled-keys=1 \
     --cpu host --socket 1 --cores $VM_CORES \
     --vga serial0 --serial0 socket  \
-    --net0 virtio,bridge=vmbr0,tag=$VM_VLAN,firewall=1
+    --net0 virtio,bridge=$VM_NET_BRIDGE,firewall=1
     
-qm importdisk $VM_ID $VM_IMAGE_FN local-lvm
-qm set $VM_ID --scsihw virtio-scsi-pci --virtio0 local-lvm:vm-$VM_ID-disk-1,discard=on,iothread=on
+qm importdisk $VM_ID $VM_IMAGE_FN $VM_STORAGE
+qm set $VM_ID --scsihw virtio-scsi-pci --virtio0 $VM_STORAGE:vm-$VM_ID-disk-1,discard=on,iothread=on
 qm resize $VM_ID virtio0 $VM_DISK_SIZE
 qm set $VM_ID --boot order=virtio0
-qm set $VM_ID --ide2 local-lvm:cloudinit
-qm set $VM_ID --tpmstate0 file=local-lvm:0,size=4M,version=v2.0
+qm set $VM_ID --ide2 $VM_STORAGE:cloudinit
+qm set $VM_ID --tpmstate0 file=$VM_STORAGE:0,size=4M,version=v2.0
 cat << EOF | tee /etc/pve/firewall/$VM_ID.fw
 [OPTIONS]
 

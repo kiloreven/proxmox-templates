@@ -54,8 +54,10 @@ package_update: true
 package_upgrade: true
 packages:
 - qemu-guest-agent
+- dnf-automatic
 runcmd:
 - systemctl start qemu-guest-agent
+- systemctl enable --now dnf-automatic.timer
 EOF
 fi
 

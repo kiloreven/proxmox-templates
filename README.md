@@ -4,10 +4,15 @@ These scripts downloads a cloud image for a distro and sets up a cloud-init
 configured template for that VM on your proxmox server.
 
 ## Distros Supported:
+- Debian 12 (EFI, Secure Boot enabled)
 - Ubuntu 24.04 (EFI, Secure Boot enabled)
 - Rocky Linux 9.5 (EFI, Secure Boot enabled)
 - Arch Linux (EFI)
-- FreeBSD 14.2 (EFI, work in progress, do not use!)
+
+Work in progress:
+
+- FreeBSD 14.2 (EFI)
+- OpenIndiana Hipster (EFI)
 
 ## Notes:
 

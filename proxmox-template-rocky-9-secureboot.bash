@@ -57,6 +57,7 @@ packages:
 - dnf-automatic
 runcmd:
 - systemctl start qemu-guest-agent
+- sed -i -r 's/apply_updates = false/apply_updates = true/' /etc/dnf/automatic.conf
 - systemctl enable --now dnf-automatic.timer
 EOF
 fi

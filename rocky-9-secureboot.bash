@@ -2,19 +2,23 @@
 
 set -euo pipefail
 
+source ./common.sh
+
 VM_TEMPLATE_NAME="rocky-9-5-template"
 VM_IMAGE_URL=https://dl.rockylinux.org/pub/rocky/9.5/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
 VM_IMAGE_CHECKSUMS_URL=$VM_IMAGE_URL.CHECKSUM
 
 VM_STORAGE=local-lvm
 VM_NET_BRIDGE=vmbr0
-VM_ID=8395
+VM_ID=9001
+VM_SOCKETS=1
 VM_CORES=2
 VM_MEM=2048
-VM_DISK_SIZE=32G
+
+VM_SYSTEM_DISK_SIZE=20G
+VM_STORAGE_DISK_SIZE=50G
 
 VM_IMAGE_FN=$(basename "$VM_IMAGE_URL")
-
 
 
 echo "Checking if ID $VM_ID already exists"
@@ -55,6 +59,9 @@ package_upgrade: true
 packages:
 - qemu-guest-agent
 - dnf-automatic
+- btop
+- screen
+- vim
 runcmd:
 - systemctl start qemu-guest-agent
 - sed -i -r 's/apply_updates = false/apply_updates = true/' /etc/dnf/automatic.conf
@@ -67,13 +74,15 @@ qm create $VM_ID --name "$VM_TEMPLATE_NAME" --ostype l26 \
     --memory $VM_MEM \
     --agent 1 \
     --bios ovmf --machine q35 --efidisk0 $VM_STORAGE:0,efitype=4m,pre-enrolled-keys=1 \
-    --cpu host --socket 1 --cores $VM_CORES \
+    --cpu host --socket $VM_SOCKETS --cores $VM_CORES \
     --vga serial0 --serial0 socket  \
     --net0 virtio,bridge=$VM_NET_BRIDGE,firewall=1
     
 qm importdisk $VM_ID $VM_IMAGE_FN $VM_STORAGE
 qm set $VM_ID --scsihw virtio-scsi-pci --virtio0 $VM_STORAGE:vm-$VM_ID-disk-1,discard=on,iothread=on
-qm resize $VM_ID virtio0 $VM_DISK_SIZE
+qm set $VM_ID --scsihw virtio-scsi-pci --virtio1 $VM_STORAGE:vm-$VM_ID-disk-2,discard=on,iothread=on
+qm resize $VM_ID virtio0 $VM_SYSTEM_DISK_SIZE
+qm resize $VM_ID virtio1 $VM_STORAGE_DISK_SIZE
 qm set $VM_ID --boot order=virtio0
 qm set $VM_ID --ide2 $VM_STORAGE:cloudinit
 qm set $VM_ID --tpmstate0 file=$VM_STORAGE:0,size=4M,version=v2.0
